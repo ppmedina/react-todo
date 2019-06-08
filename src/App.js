@@ -1,26 +1,78 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Typography from '@material-ui/core/Typography';
+import Grid, { GridSpacing } from '@material-ui/core/Grid';
+import TodoForm from './TodoForm';
+import TodoList from './TodoList';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: "",
+      todos: [],
+      completed: false,
+    };
+  }
+
+  updateValue = event => {
+    // this.state.value = inputValue
+    this.setState({value: event.target.value});
+  };
+
+  saveTodo = () => {
+    if(this.state.value) {
+      this.setState({
+        todos: [
+          ...this.state.todos,
+          { value: this.state.value, completed: false }
+        ],
+        value: ""
+      })
+    }
+  }
+
+  deleteTodo = index => {
+    this.setState({todos: this.state.todos.filter((_, i) => i != index) });
+  };
+
+  toggleCompleted = index => {
+    const todos = this.state.todos
+    todos[index].completed = !todos[index].completed
+    this.setState({ todos });
+  };
+
+  render() {
+    console.log(this.state);
+    return (
+      <React.Fragment>
+        <Typography align="center" variant="h2" gutterBottom>
+        To-Do App
+        </Typography>
+
+        <Grid container justify="center">
+          <Grid item>
+            <TodoForm
+              value={this.state.value}
+              updateValue={this.updateValue}
+              saveTodo={this.saveTodo}
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container justify="center">
+          <Grid item md={6}>
+            <TodoList
+              todos={this.state.todos}
+              toggleCompleted={this.toggleCompleted}
+              deleteTodo={this.deleteTodo}
+            />
+          </Grid>
+        </Grid>
+
+
+      </React.Fragment>
+    );
+  }
 }
 
 export default App;
